@@ -215,7 +215,8 @@
             <strong>How it works:</strong> The Caesar cypher shifts each letter in the alphabet by a fixed number of positions. 
             Numbers, spaces, and special characters remain unchanged. The classic Caesar cypher uses an offset of 3.
             <br><br>
-            <strong>Bidirectional:</strong> You can type in either the Plain Text or Cypher Text box - the other will update automatically!
+            <strong>Bidirectional:</strong> You can type in either the Plain
+            Text or Cypher Text box. The other box will update automatically!
         </div>
     </div>
 
@@ -228,6 +229,7 @@
                 this.plainCountEl = document.getElementById('plain-count');
                 this.cypherCountEl = document.getElementById('cypher-count');
                 this.updating = false; // Flag to prevent infinite loops
+                this.lastFocusedField = 'plaintext'; // Track which field was last focused
                 
                 this.initializeEventListeners();
                 this.updateMappingTable(); // Initial table update
@@ -249,17 +251,26 @@
                     }
                 });
                 
-                // Update both when offset changes
+                // Track which field is focused
+                this.plaintextEl.addEventListener('focus', () => {
+                    this.lastFocusedField = 'plaintext';
+                });
+                
+                this.cyphertextEl.addEventListener('focus', () => {
+                    this.lastFocusedField = 'cyphertext';
+                });
+                
+                // Update based on which field is focused when offset changes
                 this.offsetEl.addEventListener('change', () => {
                     if (!this.updating) {
                         this.updateMappingTable(); // Update the mapping table
-                        // Update based on which field has content or was last modified
-                        if (this.plaintextEl.value && !this.cyphertextEl.value) {
-                            this.updateCypherText();
-                        } else if (this.cyphertextEl.value && !this.plaintextEl.value) {
+                        
+                        // Update based on which field is currently focused/selected
+                        if (this.lastFocusedField === 'cyphertext') {
+                            // If cyphertext field was last focused, update plaintext
                             this.updatePlainText();
-                        } else if (this.plaintextEl.value) {
-                            // If both have content, prioritize plain text
+                        } else {
+                            // Default to updating cyphertext (plaintext focused or no focus)
                             this.updateCypherText();
                         }
                     }
