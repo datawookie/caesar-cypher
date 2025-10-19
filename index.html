@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caesar Cipher App</title>
+    <title>Caesar Cypher App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,11 +96,49 @@
             text-align: right;
             margin-top: 5px;
         }
+        
+        .mapping-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .mapping-table th,
+        .mapping-table td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px 4px;
+            min-width: 28px;
+        }
+        
+        .mapping-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .mapping-table .original-row {
+            background-color: #e7f3ff;
+            font-weight: bold;
+        }
+        
+        .mapping-table .shifted-row {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+        
+        .table-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Caesar Cipher</h1>
+        <h1>🔐 Caesar Cypher</h1>
         
         <div class="input-group">
             <label for="plaintext">Plain Text:</label>
@@ -114,7 +152,7 @@
         </div>
         
         <div class="offset-group">
-            <label for="offset">Cipher Offset:</label>
+            <label for="offset">Cypher Offset:</label>
             <select id="offset">
                 <option value="1">1 (A→B, B→C, ...)</option>
                 <option value="2">2 (A→C, B→D, ...)</option>
@@ -145,48 +183,48 @@
         </div>
         
         <div class="input-group">
-            <label for="ciphertext">Cipher Text:</label>
+            <label for="cyphertext">Cypher Text:</label>
             <textarea 
-                id="ciphertext" 
+                id="cyphertext" 
                 placeholder="Enter encrypted text here or it will appear automatically..."
                 autocomplete="off"
                 spellcheck="false"
             ></textarea>
-            <div class="char-count" id="cipher-count">0 characters</div>
+            <div class="char-count" id="cypher-count">0 characters</div>
         </div>
         
         <div class="info">
-            <strong>How it works:</strong> The Caesar cipher shifts each letter in the alphabet by a fixed number of positions. 
-            Numbers, spaces, and special characters remain unchanged. The classic Caesar cipher uses an offset of 3.
+            <strong>How it works:</strong> The Caesar cypher shifts each letter in the alphabet by a fixed number of positions. 
+            Numbers, spaces, and special characters remain unchanged. The classic Caesar cypher uses an offset of 3.
             <br><br>
-            <strong>Bidirectional:</strong> You can type in either the Plain Text or Cipher Text box - the other will update automatically!
+            <strong>Bidirectional:</strong> You can type in either the Plain Text or Cypher Text box - the other will update automatically!
         </div>
     </div>
 
     <script>
-        class CaesarCipher {
+        class CaesarCypher {
             constructor() {
                 this.plaintextEl = document.getElementById('plaintext');
-                this.ciphertextEl = document.getElementById('ciphertext');
+                this.cyphertextEl = document.getElementById('cyphertext');
                 this.offsetEl = document.getElementById('offset');
                 this.plainCountEl = document.getElementById('plain-count');
-                this.cipherCountEl = document.getElementById('cipher-count');
+                this.cypherCountEl = document.getElementById('cypher-count');
                 this.updating = false; // Flag to prevent infinite loops
                 
                 this.initializeEventListeners();
-                this.updateCipherText(); // Initial update
+                this.updateCypherText(); // Initial update
             }
             
             initializeEventListeners() {
-                // Update cipher text when plain text changes
+                // Update cypher text when plain text changes
                 this.plaintextEl.addEventListener('input', () => {
                     if (!this.updating) {
-                        this.updateCipherText();
+                        this.updateCypherText();
                     }
                 });
                 
-                // Update plain text when cipher text changes
-                this.ciphertextEl.addEventListener('input', () => {
+                // Update plain text when cypher text changes
+                this.cyphertextEl.addEventListener('input', () => {
                     if (!this.updating) {
                         this.updatePlainText();
                     }
@@ -196,13 +234,13 @@
                 this.offsetEl.addEventListener('change', () => {
                     if (!this.updating) {
                         // Update based on which field has content or was last modified
-                        if (this.plaintextEl.value && !this.ciphertextEl.value) {
-                            this.updateCipherText();
-                        } else if (this.ciphertextEl.value && !this.plaintextEl.value) {
+                        if (this.plaintextEl.value && !this.cyphertextEl.value) {
+                            this.updateCypherText();
+                        } else if (this.cyphertextEl.value && !this.plaintextEl.value) {
                             this.updatePlainText();
                         } else if (this.plaintextEl.value) {
                             // If both have content, prioritize plain text
-                            this.updateCipherText();
+                            this.updateCypherText();
                         }
                     }
                 });
@@ -232,13 +270,13 @@
                 }).join('');
             }
             
-            updateCipherText() {
+            updateCypherText() {
                 this.updating = true;
                 const plaintext = this.plaintextEl.value;
                 const offset = parseInt(this.offsetEl.value);
                 
-                const ciphertext = this.caesarShift(plaintext, offset);
-                this.ciphertextEl.value = ciphertext;
+                const cyphertext = this.caesarShift(plaintext, offset);
+                this.cyphertextEl.value = cyphertext;
                 
                 this.updateCharCount();
                 this.updating = false;
@@ -246,11 +284,11 @@
             
             updatePlainText() {
                 this.updating = true;
-                const ciphertext = this.ciphertextEl.value;
+                const cyphertext = this.cyphertextEl.value;
                 const offset = parseInt(this.offsetEl.value);
                 
                 // To decrypt, we shift in the opposite direction
-                const plaintext = this.caesarShift(ciphertext, -offset);
+                const plaintext = this.caesarShift(cyphertext, -offset);
                 this.plaintextEl.value = plaintext;
                 
                 this.updateCharCount();
@@ -259,16 +297,16 @@
             
             updateCharCount() {
                 const plainCount = this.plaintextEl.value.length;
-                const cipherCount = this.ciphertextEl.value.length;
+                const cypherCount = this.cyphertextEl.value.length;
                 
                 this.plainCountEl.textContent = `${plainCount} character${plainCount !== 1 ? 's' : ''}`;
-                this.cipherCountEl.textContent = `${cipherCount} character${cipherCount !== 1 ? 's' : ''}`;
+                this.cypherCountEl.textContent = `${cypherCount} character${cypherCount !== 1 ? 's' : ''}`;
             }
         }
         
-        // Initialize the Caesar Cipher app when the page loads
+        // Initialize the Caesar Cypher app when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new CaesarCipher();
+            new CaesarCypher();
         });
     </script>
 </body>
