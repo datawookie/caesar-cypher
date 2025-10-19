@@ -12,12 +12,15 @@
         
         <div class="input-group">
             <label for="plaintext">Plain Text:</label>
-            <textarea 
-                id="plaintext" 
-                placeholder="Enter plain text here."
-                autocomplete="off"
-                spellcheck="false"
-            ></textarea>
+            <div class="text-input-wrapper">
+                <textarea 
+                    id="plaintext" 
+                    placeholder="Enter plain text here."
+                    autocomplete="off"
+                    spellcheck="false"
+                ></textarea>
+                <button class="copy-button" id="copy-plain" title="Copy plain text">📋 Copy</button>
+            </div>
             <div class="char-count" id="plain-count">0 characters</div>
         </div>
         
@@ -72,12 +75,15 @@
         
         <div class="input-group">
             <label for="cyphertext">Cypher Text:</label>
-            <textarea 
-                id="cyphertext" 
-                placeholder="Enter encrypted text here."
-                autocomplete="off"
-                spellcheck="false"
-            ></textarea>
+            <div class="text-input-wrapper">
+                <textarea 
+                    id="cyphertext" 
+                    placeholder="Enter encrypted text here."
+                    autocomplete="off"
+                    spellcheck="false"
+                ></textarea>
+                <button class="copy-button" id="copy-cipher" title="Copy cipher text">📋 Copy</button>
+            </div>
             <div class="char-count" id="cypher-count">0 characters</div>
         </div>
         
@@ -98,6 +104,8 @@
                 this.offsetEl = document.getElementById('offset');
                 this.plainCountEl = document.getElementById('plain-count');
                 this.cypherCountEl = document.getElementById('cypher-count');
+                this.copyPlainBtn = document.getElementById('copy-plain');
+                this.copyCipherBtn = document.getElementById('copy-cipher');
                 this.updating = false; // Flag to prevent infinite loops
                 this.lastFocusedField = 'plaintext'; // Track which field was last focused
                 
@@ -144,6 +152,15 @@
                             this.updateCypherText();
                         }
                     }
+                });
+                
+                // Copy button event listeners
+                this.copyPlainBtn.addEventListener('click', () => {
+                    this.copyToClipboard(this.plaintextEl.value, this.copyPlainBtn);
+                });
+                
+                this.copyCipherBtn.addEventListener('click', () => {
+                    this.copyToClipboard(this.cyphertextEl.value, this.copyCipherBtn);
                 });
                 
                 // Initial character count
@@ -220,6 +237,31 @@
                 
                 this.plainCountEl.textContent = `${plainCount} character${plainCount !== 1 ? 's' : ''}`;
                 this.cypherCountEl.textContent = `${cypherCount} character${cypherCount !== 1 ? 's' : ''}`;
+            }
+            
+            copyToClipboard(text, button) {
+                if (!text) {
+                    return; // Don't copy empty text
+                }
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    // Success feedback
+                    const originalText = button.textContent;
+                    button.textContent = '✓ Copied!';
+                    button.classList.add('success');
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('success');
+                    }, 1500);
+                }).catch(err => {
+                    // Fallback for older browsers
+                    console.error('Failed to copy text: ', err);
+                    button.textContent = '❌ Failed';
+                    setTimeout(() => {
+                        button.textContent = '📋 Copy';
+                    }, 1500);
+                });
             }
         }
         
