@@ -109,8 +109,8 @@
         .mapping-table td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 8px 4px;
-            min-width: 28px;
+            padding: 4px 0px;
+            min-width: 24px;
         }
         
         .mapping-table th {
@@ -144,7 +144,7 @@
             <label for="plaintext">Plain Text:</label>
             <textarea 
                 id="plaintext" 
-                placeholder="Enter your message here..."
+                placeholder="Enter plain text here."
                 autocomplete="off"
                 spellcheck="false"
             ></textarea>
@@ -154,9 +154,9 @@
         <div class="offset-group">
             <label for="offset">Cypher Offset:</label>
             <select id="offset">
-                <option value="1">1 (A→B, B→C, ...)</option>
-                <option value="2">2 (A→C, B→D, ...)</option>
-                <option value="3" selected>3 (A→D, B→E, ...) - Classic</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3 - Classic</option>
                 <option value="4">4 (A→E, B→F, ...)</option>
                 <option value="5">5 (A→F, B→G, ...)</option>
                 <option value="6">6 (A→G, B→H, ...)</option>
@@ -183,10 +183,28 @@
         </div>
         
         <div class="input-group">
+            <table class="mapping-table" id="mapping-table">
+                <tbody>
+                    <tr class="original-row">
+                        <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td><td>K</td><td>L</td><td>M</td>
+                        <td>N</td><td>O</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td>
+                    </tr>
+                    <tr class="shifted-row" id="shifted-row">
+                        <td id="shift-A">D</td><td id="shift-B">E</td><td id="shift-C">F</td><td id="shift-D">G</td><td id="shift-E">H</td><td id="shift-F">I</td>
+                        <td id="shift-G">J</td><td id="shift-H">K</td><td id="shift-I">L</td><td id="shift-J">M</td><td id="shift-K">N</td><td id="shift-L">O</td>
+                        <td id="shift-M">P</td><td id="shift-N">Q</td><td id="shift-O">R</td><td id="shift-P">S</td><td id="shift-Q">T</td><td id="shift-R">U</td>
+                        <td id="shift-S">V</td><td id="shift-T">W</td><td id="shift-U">X</td><td id="shift-V">Y</td><td id="shift-W">Z</td><td id="shift-X">A</td>
+                        <td id="shift-Y">B</td><td id="shift-Z">C</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="input-group">
             <label for="cyphertext">Cypher Text:</label>
             <textarea 
                 id="cyphertext" 
-                placeholder="Enter encrypted text here or it will appear automatically..."
+                placeholder="Enter encrypted text here."
                 autocomplete="off"
                 spellcheck="false"
             ></textarea>
@@ -212,6 +230,7 @@
                 this.updating = false; // Flag to prevent infinite loops
                 
                 this.initializeEventListeners();
+                this.updateMappingTable(); // Initial table update
                 this.updateCypherText(); // Initial update
             }
             
@@ -233,6 +252,7 @@
                 // Update both when offset changes
                 this.offsetEl.addEventListener('change', () => {
                     if (!this.updating) {
+                        this.updateMappingTable(); // Update the mapping table
                         // Update based on which field has content or was last modified
                         if (this.plaintextEl.value && !this.cyphertextEl.value) {
                             this.updateCypherText();
@@ -293,6 +313,24 @@
                 
                 this.updateCharCount();
                 this.updating = false;
+            }
+            
+            updateMappingTable() {
+                const offset = parseInt(this.offsetEl.value);
+                const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                
+                // Update each letter in the shifted row
+                for (let i = 0; i < 26; i++) {
+                    const originalLetter = alphabet[i];
+                    const shiftedIndex = (i + offset) % 26;
+                    const shiftedLetter = alphabet[shiftedIndex];
+                    
+                    const cellId = `shift-${originalLetter}`;
+                    const cell = document.getElementById(cellId);
+                    if (cell) {
+                        cell.textContent = shiftedLetter;
+                    }
+                }
             }
             
             updateCharCount() {
