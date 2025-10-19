@@ -4,96 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caesar Cypher</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'pulse-success': 'pulse 0.3s ease-in-out',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <div class="container">
-        <h1>🔐 Caesar Cypher</h1>
-        
-        <div class="input-group">
-            <label for="plaintext">Plain Text:</label>
-            <div class="text-input-wrapper">
-                <textarea 
-                    id="plaintext" 
-                    placeholder="Enter plain text here."
-                    autocomplete="off"
-                    spellcheck="false"
-                ></textarea>
-                <button class="copy-button" id="copy-plain" title="Copy plain text">📋 Copy</button>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+            <h1 class="text-4xl font-bold text-center text-slate-800 mb-8 tracking-tight">
+                🔐 Caesar Cypher
+            </h1>
+            
+            <div class="space-y-8">
+                <!-- Plain Text Input -->
+                <div class="space-y-3">
+                    <label for="plaintext" class="block text-sm font-semibold text-slate-700">
+                        Plain Text:
+                    </label>
+                    <div class="relative">
+                        <textarea 
+                            id="plaintext" 
+                            placeholder="Enter plain text here..."
+                            autocomplete="off"
+                            spellcheck="false"
+                            class="w-full h-32 p-4 border-2 border-slate-200 rounded-xl bg-white/50 backdrop-blur-sm font-mono text-sm placeholder-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-200 resize-none"
+                        ></textarea>
+                        <button 
+                            id="copy-plain" 
+                            title="Copy plain text"
+                            class="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-lg transition-all duration-200 opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        >
+                            📋 Copy
+                        </button>
+                    </div>
+                    <div id="plain-count" class="text-xs text-slate-500 text-right">0 characters</div>
+                </div>
+                
+                <!-- Offset Selector -->
+                <div class="space-y-3">
+                    <label for="offset" class="block text-sm font-semibold text-slate-700">
+                        Cipher Offset:
+                    </label>
+                    <select 
+                        id="offset"
+                        class="w-full md:w-auto px-4 py-3 border-2 border-slate-200 rounded-xl bg-white/50 backdrop-blur-sm text-sm font-medium text-slate-700 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-200 cursor-pointer"
+                    >
+                        <option value="1">1 — Simple shift</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3 — Classic</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12 — Half shift</option>
+                        <option value="13">13 — ROT13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25 — Atbash</option>
+                    </select>
+                </div>
+                
+                <!-- Letter Mapping Table -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-semibold text-slate-700">Letter Mapping:</h3>
+                    <div class="overflow-x-auto">
+                        <table id="mapping-table" class="w-full border-2 border-slate-200 rounded-xl overflow-hidden bg-white/30 backdrop-blur-sm">
+                            <tbody>
+                                <tr class="bg-blue-50/80">
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">A</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">B</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">C</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">D</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">E</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">F</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">G</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">H</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">I</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">J</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">K</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">L</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">M</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">N</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">O</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">P</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">Q</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">R</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">S</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">T</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">U</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">V</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">W</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">X</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600 border-r border-slate-200">Y</td>
+                                    <td class="px-2 py-3 text-xs font-mono font-bold text-center text-slate-600">Z</td>
+                                </tr>
+                                <tr class="bg-amber-50/80 border-t border-slate-200">
+                                    <td id="shift-A" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">D</td>
+                                    <td id="shift-B" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">E</td>
+                                    <td id="shift-C" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">F</td>
+                                    <td id="shift-D" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">G</td>
+                                    <td id="shift-E" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">H</td>
+                                    <td id="shift-F" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">I</td>
+                                    <td id="shift-G" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">J</td>
+                                    <td id="shift-H" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">K</td>
+                                    <td id="shift-I" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">L</td>
+                                    <td id="shift-J" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">M</td>
+                                    <td id="shift-K" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">N</td>
+                                    <td id="shift-L" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">O</td>
+                                    <td id="shift-M" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">P</td>
+                                    <td id="shift-N" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">Q</td>
+                                    <td id="shift-O" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">R</td>
+                                    <td id="shift-P" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">S</td>
+                                    <td id="shift-Q" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">T</td>
+                                    <td id="shift-R" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">U</td>
+                                    <td id="shift-S" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">V</td>
+                                    <td id="shift-T" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">W</td>
+                                    <td id="shift-U" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">X</td>
+                                    <td id="shift-V" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">Y</td>
+                                    <td id="shift-W" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">Z</td>
+                                    <td id="shift-X" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">A</td>
+                                    <td id="shift-Y" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700 border-r border-slate-200">B</td>
+                                    <td id="shift-Z" class="px-2 py-3 text-xs font-mono font-bold text-center text-amber-700">C</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Cipher Text Input -->
+                <div class="space-y-3">
+                    <label for="cyphertext" class="block text-sm font-semibold text-slate-700">
+                        Cipher Text:
+                    </label>
+                    <div class="relative">
+                        <textarea 
+                            id="cyphertext" 
+                            placeholder="Enter encrypted text here..."
+                            autocomplete="off"
+                            spellcheck="false"
+                            class="w-full h-32 p-4 border-2 border-slate-200 rounded-xl bg-white/50 backdrop-blur-sm font-mono text-sm placeholder-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-200 resize-none"
+                        ></textarea>
+                        <button 
+                            id="copy-cipher" 
+                            title="Copy cipher text"
+                            class="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-lg transition-all duration-200 opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        >
+                            📋 Copy
+                        </button>
+                    </div>
+                    <div id="cypher-count" class="text-xs text-slate-500 text-right">0 characters</div>
+                </div>
+                
+                <!-- Info Section -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-slate-700">
+                            <p class="font-semibold mb-2">How it works:</p>
+                            <p class="mb-3">The Caesar cipher shifts each letter in the alphabet by a fixed number of positions. Numbers, spaces, and special characters remain unchanged. The classic Caesar cipher uses an offset of 3.</p>
+                            <p class="font-semibold mb-1">Bidirectional:</p>
+                            <p>You can type in either the Plain Text or Cipher Text box. The other box will update automatically!</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="char-count" id="plain-count">0 characters</div>
-        </div>
-        
-        <div class="offset-group">
-            <label for="offset">Cypher Offset:</label>
-            <select id="offset">
-                <option value="1">1 — Simple shift</option>
-                <option value="2">2</option>
-                <option value="3" selected>3 — Classic</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12 — Half shift</option>
-                <option value="13">13 — ROT13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
-                <option value="25">25 — Atbash</option>
-            </select>
-        </div>
-        
-        <div class="input-group">
-            <table class="mapping-table" id="mapping-table">
-                <tbody>
-                    <tr class="original-row">
-                        <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td><td>K</td><td>L</td><td>M</td>
-                        <td>N</td><td>O</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td>
-                    </tr>
-                    <tr class="shifted-row" id="shifted-row">
-                        <td id="shift-A">D</td><td id="shift-B">E</td><td id="shift-C">F</td><td id="shift-D">G</td><td id="shift-E">H</td><td id="shift-F">I</td>
-                        <td id="shift-G">J</td><td id="shift-H">K</td><td id="shift-I">L</td><td id="shift-J">M</td><td id="shift-K">N</td><td id="shift-L">O</td>
-                        <td id="shift-M">P</td><td id="shift-N">Q</td><td id="shift-O">R</td><td id="shift-P">S</td><td id="shift-Q">T</td><td id="shift-R">U</td>
-                        <td id="shift-S">V</td><td id="shift-T">W</td><td id="shift-U">X</td><td id="shift-V">Y</td><td id="shift-W">Z</td><td id="shift-X">A</td>
-                        <td id="shift-Y">B</td><td id="shift-Z">C</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="input-group">
-            <label for="cyphertext">Cypher Text:</label>
-            <div class="text-input-wrapper">
-                <textarea 
-                    id="cyphertext" 
-                    placeholder="Enter encrypted text here."
-                    autocomplete="off"
-                    spellcheck="false"
-                ></textarea>
-                <button class="copy-button" id="copy-cipher" title="Copy cipher text">📋 Copy</button>
-            </div>
-            <div class="char-count" id="cypher-count">0 characters</div>
-        </div>
-        
-        <div class="info">
-            <strong>How it works:</strong> The Caesar cypher shifts each letter in the alphabet by a fixed number of positions. 
-            Numbers, spaces, and special characters remain unchanged. The classic Caesar cypher uses an offset of 3.
-            <br><br>
-            <strong>Bidirectional:</strong> You can type in either the Plain
-            Text or Cypher Text box. The other box will update automatically!
         </div>
     </div>
 
@@ -248,19 +349,26 @@
                 navigator.clipboard.writeText(text).then(() => {
                     // Success feedback
                     const originalText = button.textContent;
+                    const originalClasses = button.className;
+                    
                     button.textContent = '✓ Copied!';
-                    button.classList.add('success');
+                    button.className = 'absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-medium rounded-lg transition-all duration-200 opacity-100 animate-pulse-success focus:outline-none focus:ring-2 focus:ring-green-300';
                     
                     setTimeout(() => {
                         button.textContent = originalText;
-                        button.classList.remove('success');
+                        button.className = originalClasses;
                     }, 1500);
                 }).catch(err => {
                     // Fallback for older browsers
                     console.error('Failed to copy text: ', err);
+                    const originalClasses = button.className;
+                    
                     button.textContent = '❌ Failed';
+                    button.className = 'absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-medium rounded-lg transition-all duration-200 opacity-100 focus:outline-none focus:ring-2 focus:ring-red-300';
+                    
                     setTimeout(() => {
                         button.textContent = '📋 Copy';
+                        button.className = originalClasses;
                     }, 1500);
                 });
             }
