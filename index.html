@@ -53,7 +53,7 @@
                 <!-- Offset Selector -->
                 <div class="space-y-3">
                     <label for="offset" class="block text-sm font-semibold text-slate-700">
-                        Cipher Offset:
+                        Cypher Offset:
                     </label>
                     <select 
                         id="offset"
@@ -154,10 +154,10 @@
                     </div>
                 </div>
                 
-                <!-- Cipher Text Input -->
+                <!-- Cypher Text Input -->
                 <div class="space-y-3">
                     <label for="cyphertext" class="block text-sm font-semibold text-slate-700">
-                        Cipher Text:
+                        Cypher Text:
                     </label>
                     <div class="relative">
                         <textarea 
@@ -168,8 +168,8 @@
                             class="w-full h-32 p-4 border-2 border-slate-200 rounded-xl bg-white/50 backdrop-blur-sm font-mono text-sm placeholder-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-200 resize-none"
                         ></textarea>
                         <button 
-                            id="copy-cipher" 
-                            title="Copy cipher text"
+                            id="copy-cypher" 
+                            title="Copy cypher text"
                             class="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-lg transition-all duration-200 opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         >
                             📋 Copy
@@ -188,9 +188,9 @@
                         </div>
                         <div class="text-sm text-slate-700">
                             <p class="font-semibold mb-2">How it works:</p>
-                            <p class="mb-3">The Caesar cipher shifts each letter in the alphabet by a fixed number of positions. Numbers, spaces, and special characters remain unchanged. The classic Caesar cipher uses an offset of 3.</p>
+                            <p class="mb-3">The Caesar cypher shifts each letter in the alphabet by a fixed number of positions. Numbers, spaces, and special characters remain unchanged. The classic Caesar cypher uses an offset of 3.</p>
                             <p class="font-semibold mb-1">Bidirectional:</p>
-                            <p>You can type in either the Plain Text or Cipher Text box. The other box will update automatically!</p>
+                            <p>You can type in either the Plain Text or Cypher Text box. The other box will update automatically!</p>
                         </div>
                     </div>
                 </div>
@@ -207,7 +207,7 @@
                 this.plainCountEl = document.getElementById('plain-count');
                 this.cypherCountEl = document.getElementById('cypher-count');
                 this.copyPlainBtn = document.getElementById('copy-plain');
-                this.copyCipherBtn = document.getElementById('copy-cipher');
+                this.copyCypherBtn = document.getElementById('copy-cypher');
                 this.updating = false; // Flag to prevent infinite loops
                 this.lastFocusedField = 'plaintext'; // Track which field was last focused
                 
@@ -261,8 +261,8 @@
                     this.copyToClipboard(this.plaintextEl.value, this.copyPlainBtn);
                 });
                 
-                this.copyCipherBtn.addEventListener('click', () => {
-                    this.copyToClipboard(this.cyphertextEl.value, this.copyCipherBtn);
+                this.copyCypherBtn.addEventListener('click', () => {
+                    this.copyToClipboard(this.cyphertextEl.value, this.copyCypherBtn);
                 });
                 
                 // Initial character count
